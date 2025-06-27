@@ -1,7 +1,7 @@
 // File: Jobs.jsx
 import React, { useEffect } from 'react';
 import Navbar from './Navbar';
-import Filtercard from './Filtercard';
+import Filtercard from './FilterCard';
 import Job from './Job'; // This component will display a single job card.
 import { useDispatch, useSelector } from 'react-redux';
 import useGetAllJobs from '@/hooks/useGetAllJobs'; // 1. Import the hook to fetch jobs

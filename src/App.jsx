@@ -121,11 +121,12 @@ const appRouter = createBrowserRouter([
 
 
 ]);
+
 function App() {
   useGetMe();
   return (
-    <div>
-        <RouterProvider router = {appRouter}></RouterProvider>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
+      <RouterProvider router = {appRouter}></RouterProvider>
     </div>
   )
 }

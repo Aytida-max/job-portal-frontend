@@ -5,15 +5,28 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../dialog"; // Assuming these are shadcn/ui components
+} from "../dialog";
 import { Label } from "../label";
 import { Button } from "../button";
+import { Input } from "../input";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "sonner";
-import { USER_API_ENDPOINT } from "@/utils/data"; // Your API endpoint utility
-import { setUser } from "@/redux/authSlice"; // Your Redux action
-import { Loader2 } from "lucide-react";
+import { USER_API_ENDPOINT } from "@/utils/data";
+import { setUser } from "@/redux/authSlice";
+import { 
+  Loader2, 
+  User, 
+  Mail, 
+  Phone, 
+  FileText, 
+  Image, 
+  FileUp, 
+  Sparkles,
+  Edit3,
+  CheckCircle,
+  X
+} from "lucide-react";
 
 const EditProfileModal = ({ open, setOpen }) => {
   const [loading, setLoading] = useState(false);
@@ -26,7 +39,7 @@ const EditProfileModal = ({ open, setOpen }) => {
     email: "",
     phoneNumber: "",
     bio: "",
-    skills: "", // Skills will be handled as a comma-separated string
+    skills: "",
   });
 
   // Separate state for file objects
@@ -41,13 +54,12 @@ const EditProfileModal = ({ open, setOpen }) => {
         email: user.email || "",
         phoneNumber: user.phoneNumber || "",
         bio: user.profile?.bio || "",
-        skills: user.profile?.skills?.join(", ") || "", // Join skills array into a string
+        skills: user.profile?.skills?.join(", ") || "",
       });
-      // Reset file inputs when modal opens or user changes; cannot pre-fill file inputs
       setProfilePhotoFile(null);
       setResumeFile(null);
     }
-  }, [user, open]); // Re-initialize if modal opens or user data changes
+  }, [user, open]);
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -58,7 +70,7 @@ const EditProfileModal = ({ open, setOpen }) => {
     if (file) {
       if (!file.type.startsWith("image/")) {
         toast.error("Invalid file type. Please upload an image for profile photo.");
-        e.target.value = null; // Clear the file input
+        e.target.value = null;
         setProfilePhotoFile(null);
         return;
       }
@@ -73,7 +85,7 @@ const EditProfileModal = ({ open, setOpen }) => {
     if (file) {
       if (file.type !== "application/pdf") {
         toast.error("Invalid file type. Please upload a PDF for the resume.");
-        e.target.value = null; // Clear the file input
+        e.target.value = null;
         setResumeFile(null);
         return;
       }
@@ -92,17 +104,15 @@ const EditProfileModal = ({ open, setOpen }) => {
     formData.append("email", input.email);
     formData.append("phoneNumber", input.phoneNumber);
     formData.append("bio", input.bio);
-    formData.append("skills", input.skills); // Backend expects comma-separated string
+    formData.append("skills", input.skills);
 
-    // Append files if they have been selected
     if (profilePhotoFile) {
-      formData.append("profilePhoto", profilePhotoFile); // Field name for backend
+      formData.append("profilePhoto", profilePhotoFile);
     }
     if (resumeFile) {
-      formData.append("resume", resumeFile); // Field name for backend
+      formData.append("resume", resumeFile);
     }
 
-    // Check if any data has actually changed or if files are added (optional)
     const initialSkillsString = user?.profile?.skills?.join(", ") || "";
     const noTextChange =
       user?.fullname === input.fullname &&
@@ -120,7 +130,7 @@ const EditProfileModal = ({ open, setOpen }) => {
 
     try {
       const res = await axios.post(
-        `${USER_API_ENDPOINT}/profile/update`, // Your backend endpoint
+        `${USER_API_ENDPOINT}/profile/update`,
         formData,
         {
           headers: {
@@ -131,18 +141,9 @@ const EditProfileModal = ({ open, setOpen }) => {
       );
 
       if (res.data.success) {
-        console.log("DEBUG: Raw res.data.user object:", res.data.user); // Keep this
-        console.log("DEBUG: res.data.user.fullname:", res.data.user?.fullname);
-        console.log("DEBUG: res.data.user.email:", res.data.user?.email);
-        console.log("DEBUG: res.data.user.profile object:", res.data.user?.profile);
-        console.log("DEBUG: res.data.user.profile.bio:", res.data.user?.profile?.bio);
-        console.log("DEBUG: res.data.user.profile.skills:", res.data.user?.profile?.skills);
-        console.log("DEBUG: res.data.user.profile.profilePhoto:", res.data.user?.profile?.profilePhoto);
-        console.log("DEBUG: res.data.user.profile.resume:", res.data.user?.profile?.resume);
-
-        dispatch(setUser(res.data.user)); // Update Redux store with the new user data
+        dispatch(setUser(res.data.user));
         toast.success(res.data.message);
-        setOpen(false); // Close modal on success
+        setOpen(false);
       } else {
         toast.error(res.data.message || "Update failed. Please try again.");
       }
@@ -157,129 +158,207 @@ const EditProfileModal = ({ open, setOpen }) => {
   };
 
   return (
-    <div>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[600px]"> {/* Increased width a bit */}
-          <DialogHeader>
-            <DialogTitle>Edit Profile</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleSubmit}>
-            <div className="grid gap-4 py-4 max-h-[70vh] overflow-y-auto pr-2"> {/* Added scroll for content */}
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="glass border border-white/20 max-w-2xl bg-black/40 backdrop-blur-xl">
+        <DialogHeader className="text-center pb-6">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full">
+              <Edit3 className="h-6 w-6 text-white" />
+            </div>
+            <DialogTitle className="text-2xl font-bold gradient-text">
+              Edit Profile
+            </DialogTitle>
+          </div>
+          <p className="text-gray-400 text-sm">
+            Update your profile information and make it stand out
+          </p>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="max-h-[60vh] overflow-y-auto pr-2 space-y-6">
+            {/* Personal Information Section */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                <User className="h-5 w-5 text-blue-400" />
+                Personal Information
+              </h3>
+              
               {/* Full Name */}
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="fullname" className="text-right">
-                  Name
+              <div className="space-y-2">
+                <Label className="text-white font-medium flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  Full Name
                 </Label>
-                <input
+                <Input
                   type="text"
-                  id="fullname"
                   value={input.fullname}
                   name="fullname"
                   onChange={changeEventHandler}
-                  className="col-span-3 border border-gray-300 rounded-md p-2"
+                  placeholder="Enter your full name"
+                  className="w-full"
                 />
               </div>
+
               {/* Email */}
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="email" className="text-right">
-                  Email
+              <div className="space-y-2">
+                <Label className="text-white font-medium flex items-center gap-2">
+                  <Mail className="h-4 w-4" />
+                  Email Address
                 </Label>
-                <input
+                <Input
                   type="email"
-                  id="email"
                   value={input.email}
                   name="email"
                   onChange={changeEventHandler}
-                  className="col-span-3 border border-gray-300 rounded-md p-2"
+                  placeholder="Enter your email address"
+                  className="w-full"
                 />
               </div>
+
               {/* Phone Number */}
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="phoneNumber" className="text-right">
-                  Phone
+              <div className="space-y-2">
+                <Label className="text-white font-medium flex items-center gap-2">
+                  <Phone className="h-4 w-4" />
+                  Phone Number
                 </Label>
-                <input
+                <Input
                   type="tel"
-                  id="phoneNumber"
                   value={input.phoneNumber}
                   name="phoneNumber"
                   onChange={changeEventHandler}
-                  className="col-span-3 border border-gray-300 rounded-md p-2"
-                />
-              </div>
-              {/* Bio */}
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="bio" className="text-right">
-                  Bio
-                </Label>
-                <textarea // Changed to textarea for better bio editing
-                  id="bio"
-                  value={input.bio}
-                  name="bio"
-                  onChange={changeEventHandler}
-                  className="col-span-3 border border-gray-300 rounded-md p-2 h-24"
-                  rows="3"
-                />
-              </div>
-              {/* Skills */}
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="skills" className="text-right">
-                  Skills
-                </Label>
-                <input
-                  id="skills"
-                  name="skills"
-                  placeholder="e.g., react, node, css (comma-separated)"
-                  value={input.skills}
-                  onChange={changeEventHandler}
-                  className="col-span-3 border border-gray-300 rounded-md p-2"
-                />
-              </div>
-              {/* Profile Photo file upload */}
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="profilePhotoFile" className="text-right">
-                  Profile Photo
-                </Label>
-                <input
-                  type="file"
-                  id="profilePhotoFile"
-                  name="profilePhotoFile"
-                  accept="image/*"
-                  onChange={handleProfilePhotoFileChange}
-                  className="col-span-3 border border-gray-300 rounded-md p-2 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                />
-              </div>
-              {/* Resume file upload */}
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="resumeFile" className="text-right">
-                  Resume (PDF)
-                </Label>
-                <input
-                  type="file"
-                  id="resumeFile"
-                  name="resumeFile"
-                  accept="application/pdf"
-                  onChange={handleResumeFileChange}
-                  className="col-span-3 border border-gray-300 rounded-md p-2 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
+                  placeholder="Enter your phone number"
+                  className="w-full"
                 />
               </div>
             </div>
 
-            <DialogFooter>
-              {loading ? (
-                <Button disabled className="w-full my-4">
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
-                </Button>
-              ) : (
-                <Button type="submit" className="w-full my-4">
-                  Save Changes
-                </Button>
-              )}
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-    </div>
+            {/* Professional Information Section */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                <FileText className="h-5 w-5 text-green-400" />
+                Professional Information
+              </h3>
+              
+              {/* Bio */}
+              <div className="space-y-2">
+                <Label className="text-white font-medium flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Bio
+                </Label>
+                <textarea
+                  value={input.bio}
+                  name="bio"
+                  onChange={changeEventHandler}
+                  placeholder="Tell us about yourself, your experience, and what you're looking for..."
+                  className="w-full h-24 resize-none glass border border-white/20 rounded-lg p-3 text-white placeholder-gray-400 focus:border-blue-400 focus:ring-blue-400/50 focus:ring-2 transition-all duration-300"
+                  rows="4"
+                />
+              </div>
+
+              {/* Skills */}
+              <div className="space-y-2">
+                <Label className="text-white font-medium flex items-center gap-2">
+                  <Sparkles className="h-4 w-4" />
+                  Skills
+                </Label>
+                <Input
+                  value={input.skills}
+                  name="skills"
+                  onChange={changeEventHandler}
+                  placeholder="e.g., React, Node.js, Python, UI/UX Design (comma-separated)"
+                  className="w-full"
+                />
+                <p className="text-xs text-gray-400">
+                  Separate multiple skills with commas
+                </p>
+              </div>
+            </div>
+
+            {/* File Uploads Section */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                <FileUp className="h-5 w-5 text-purple-400" />
+                Documents & Media
+              </h3>
+              
+              {/* Profile Photo */}
+              <div className="space-y-2">
+                <Label className="text-white font-medium flex items-center gap-2">
+                  <Image className="h-4 w-4" />
+                  Profile Photo
+                </Label>
+                <div className="relative">
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleProfilePhotoFileChange}
+                    className="w-full cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-500/20 file:text-blue-400 hover:file:bg-blue-500/30 transition-all duration-300"
+                  />
+                  {profilePhotoFile && (
+                    <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                      <CheckCircle className="h-5 w-5 text-green-400" />
+                    </div>
+                  )}
+                </div>
+                <p className="text-xs text-gray-400">
+                  Upload a professional photo (JPG, PNG, GIF)
+                </p>
+              </div>
+
+              {/* Resume */}
+              <div className="space-y-2">
+                <Label className="text-white font-medium flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Resume (PDF)
+                </Label>
+                <div className="relative">
+                  <Input
+                    type="file"
+                    accept="application/pdf"
+                    onChange={handleResumeFileChange}
+                    className="w-full cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-green-500/20 file:text-green-400 hover:file:bg-green-500/30 transition-all duration-300"
+                  />
+                  {resumeFile && (
+                    <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                      <CheckCircle className="h-5 w-5 text-green-400" />
+                    </div>
+                  )}
+                </div>
+                <p className="text-xs text-gray-400">
+                  Upload your latest resume in PDF format
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer Actions */}
+          <DialogFooter className="flex gap-3 pt-6 border-t border-white/10">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setOpen(false)}
+              className="flex-1"
+              disabled={loading}
+            >
+              <X className="h-4 w-4 mr-2" />
+              Cancel
+            </Button>
+            
+            {loading ? (
+              <Button disabled className="flex-1">
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </Button>
+            ) : (
+              <Button type="submit" variant="gradient" className="flex-1">
+                <CheckCircle className="h-4 w-4 mr-2" />
+                Save Changes
+              </Button>
+            )}
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 };
 

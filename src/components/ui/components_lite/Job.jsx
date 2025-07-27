@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../button";
 import { Avatar, AvatarImage } from "../avatar";
 import { Badge } from "../badge";
-import { Bookmark } from "lucide-react";
+import { Bookmark, MapPin, DollarSign, Clock, Building2, ArrowRight, Calendar } from "lucide-react";
 
 // A small helper function to calculate time since a date
 const timeSince = (date) => {
@@ -32,7 +32,6 @@ const Job = ({ job }) => {
 
   // 2. Create variables from the job prop for clean and safe access
   const companyName = job.company?.name || "N/A";
-  // Assuming a logo URL might be available on job.company.logo
   const companyLogo = job.company?.logo || "https://www.kindpng.com/picc/m/504-5047507_rcb-logo-royal-challengers-bangalore-png-royal-challengers.png";
   const location = job.location || "N/A";
   const title = job.title || "No Title";
@@ -42,61 +41,101 @@ const Job = ({ job }) => {
   const postedAt = job.createdAt ? timeSince(job.createdAt) : "Recently";
 
   return (
-    <div className="p-5 rounded-md shadow-xl bg-white border border-gray-100 cursor-pointer transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-2xl hover:shadow-blue-200 hover:p-3">
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-500">
-          {/* 3. Display dynamic "time ago" */}
-          {postedAt}
-        </p>
-        <Button variant="outline" className="rounded-full" size="icon">
-          <Bookmark />
-        </Button>
-      </div>
-
-      <div className="flex items-center gap-2 my-2">
-        <Button className="p-6" variant="outline" size="icon">
-          <Avatar>
-            {/* 4. Display dynamic company logo */}
-            <AvatarImage src={companyLogo} />
-          </Avatar>
-        </Button>
-        <div>
-          {/* 5. Display dynamic company name and location */}
-          <h1 className="font-medium text-lg">{companyName}</h1>
-          <p className="text-sm text-gray-500">{location}</p>
+    <div className="glass border border-white/10 p-6 rounded-xl cursor-pointer hover-lift group relative overflow-hidden">
+      {/* Background gradient on hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      
+      <div className="relative z-10">
+        {/* Header with time and bookmark */}
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2 text-gray-400 text-sm">
+            <Calendar className="h-4 w-4" />
+            <span>{postedAt}</span>
+          </div>
+          <Button 
+            variant="ghost" 
+            size="icon"
+            className="text-gray-400 hover:text-blue-400 hover:bg-blue-500/20 transition-all duration-300"
+          >
+            <Bookmark className="h-4 w-4" />
+          </Button>
         </div>
-      </div>
 
-      <div>
-        {/* 6. Display dynamic job title and description */}
-        <h1 className="font-bold text-lg my-2">{title}</h1>
-        {/* Truncate long descriptions for a cleaner look */}
-        <p className="text-sm text-gray-600">{description.length > 100 ? `${description.substring(0, 100)}...` : description}</p>
-      </div>
-      <div className="flex flex-wrap items-center gap-2 mt-4">
-        {/* 7. Display dynamic badges */}
-        <Badge className={"text-blue-700 font-bold"} variant="ghost">
-          {position}
-        </Badge>
-        <Badge className={"text-[#F83002] font-bold"} variant="ghost">
-          {location}
-        </Badge>
-        <Badge className={"text-[#7209b7] font-bold"} variant="ghost">
-          {salary}
-        </Badge>
-      </div>
-      <div className="flex items-center gap-4 mt-4">
-        <Button
-          onClick={() => {
-            // 8. Use the real job._id for navigation
-            navigate(`/description/${job._id}`);
-          }}
-          className="font-bold rounded-sm"
-          variant="outline"
-        >
-          Details
-        </Button>
-        <Button className="bg-[#7209b7] hover:bg-[#5f079a]">Save For Later</Button>
+        {/* Company Info */}
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg group-hover:scale-110 transition-transform duration-300">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={companyLogo} alt={companyName} />
+            </Avatar>
+          </div>
+          <div>
+            <h3 className="font-semibold text-white group-hover:text-blue-300 transition-colors duration-300">
+              {companyName}
+            </h3>
+            <div className="flex items-center gap-1 text-gray-400 text-sm">
+              <MapPin className="h-3 w-3" />
+              <span>{location}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Job Title and Description */}
+        <div className="mb-4">
+          <h2 className="font-bold text-xl mb-3 text-white group-hover:text-blue-200 transition-colors duration-300">
+            {title}
+          </h2>
+          <p className="text-gray-300 text-sm leading-relaxed">
+            {description.length > 120 ? `${description.substring(0, 120)}...` : description}
+          </p>
+        </div>
+
+        {/* Badges */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          <Badge 
+            className="bg-blue-500/20 text-blue-300 border-blue-500/30 hover:bg-blue-500/30 transition-colors duration-300" 
+            variant="outline"
+          >
+            <Building2 className="h-3 w-3 mr-1" />
+            {position}
+          </Badge>
+          <Badge 
+            className="bg-green-500/20 text-green-300 border-green-500/30 hover:bg-green-500/30 transition-colors duration-300" 
+            variant="outline"
+          >
+            <MapPin className="h-3 w-3 mr-1" />
+            {location}
+          </Badge>
+          <Badge 
+            className="bg-purple-500/20 text-purple-300 border-purple-500/30 hover:bg-purple-500/30 transition-colors duration-300" 
+            variant="outline"
+          >
+            <DollarSign className="h-3 w-3 mr-1" />
+            {salary}
+          </Badge>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex items-center gap-3">
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/description/${job._id}`);
+            }}
+            variant="outline"
+            className="flex-1 group-hover:border-blue-400 group-hover:text-blue-400 transition-all duration-300"
+          >
+            <ArrowRight className="h-4 w-4 mr-2 group-hover:translate-x-1 transition-transform duration-300" />
+            View Details
+          </Button>
+          <Button 
+            variant="gradient"
+            className="flex-1"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Bookmark className="h-4 w-4 mr-2" />
+            Save Job
+          </Button>
+        </div>
       </div>
     </div>
   );

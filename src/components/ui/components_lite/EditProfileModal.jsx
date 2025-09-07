@@ -10,7 +10,7 @@ import { Label } from "../label";
 import { Button } from "../button";
 import { Input } from "../input";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+import API from "@/api/axios";
 import { toast } from "sonner";
 import { USER_API_ENDPOINT } from "@/utils/data";
 import { setUser } from "@/redux/authSlice";
@@ -129,16 +129,17 @@ const EditProfileModal = ({ open, setOpen }) => {
     }
 
     try {
-      const res = await axios.post(
-        `${USER_API_ENDPOINT}/profile/update`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          withCredentials: true,
-        }
-      );
+      // const res = await API.post(
+      //   `${USER_API_ENDPOINT}/profile/update`,
+      //   formData,
+      //   {
+      //     headers: {
+      //       "Content-Type": "multipart/form-data",
+      //     },
+      //     withCredentials: true,
+      //   }
+      // );
+      const res = await API.post("/api/users/profile/update", formData);
 
       if (res.data.success) {
         dispatch(setUser(res.data.user));

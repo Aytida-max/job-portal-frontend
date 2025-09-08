@@ -6,7 +6,7 @@ import useGetJobById from "@/hooks/useGetJobById";
 import { useDispatch, useSelector } from "react-redux";
 import { APPLICATION_API_ENDPOINT } from "@/utils/data";
 import { toast } from "sonner";
-import axios from "axios";
+import API from "@/api/axios";
 import { setSingleJob } from "@/redux/jobSlice";
 import { 
   Briefcase, 
@@ -34,10 +34,11 @@ const Description = () => {
 
   const applyJobHandler = async () => {
     try {
-      const res = await axios.get(
-        `${APPLICATION_API_ENDPOINT}/apply/${id}`,
-        { withCredentials: true }
-      );
+      // const res = await axios.get(
+      //   `${APPLICATION_API_ENDPOINT}/apply/${id}`,
+      //   { withCredentials: true }
+      // );
+      const res = await API.get(`/application/apply/${id}`);
       if (res.data.success) {
         dispatch(setSingleJob(res.data.job));
         toast.success(res.data.message);

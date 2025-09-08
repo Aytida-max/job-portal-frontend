@@ -8,7 +8,7 @@
 
 // 1. Read the base URL from the Vercel environment variable.
 // 2. If it's not found (i.e., when you run locally), it "falls back" to localhost.
-const API_BASE_URL = import.meta.env.VITE_API_URL || "https://job-portal-backend-rewx.onrender.com";
+const API_BASE_URL = import.meta.env.VITE_API_URL ;
 
 // 3. Construct the full endpoint URLs using the base URL.
 export const USER_API_ENDPOINT = `${API_BASE_URL}/api/users`;

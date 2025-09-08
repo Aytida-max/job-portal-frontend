@@ -1,11 +1,12 @@
 import axios from 'axios';
 
-// Get the backend URL from environment variables, with a fallback
-const API_BASE_URL = import.meta.env.VITE_API_URL || "https://job-portal-backend-rewx.onrender.com";
+// Get the backend URL from environment variables
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const API = axios.create({
-  baseURL: API_BASE_URL,
-  withCredentials: true, // This is the magic line that sends cookies!
+  // This is the corrected line
+  baseURL: `${API_BASE_URL}/api`, 
+  withCredentials: true,
 });
 
 export default API;

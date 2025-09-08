@@ -1,6 +1,7 @@
 import { setAllJobs } from "@/redux/jobSlice";
 import { JOB_API_ENDPOINT } from "@/utils/data";
-import axios from "axios";
+// import axios from "axios";
+import API from "@/api/axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -16,7 +17,8 @@ const useGetAllJobs = () => {
       setError(null);
       try {
          
-         let url = `${JOB_API_ENDPOINT}/get?keyword=${searchedQuery}`;
+        //  let url = `${JOB_API_ENDPOINT}/get?keyword=${searchedQuery}`;
+        let url = `/job/get?keyword=${searchedQuery}`;
          if (selectedFilters) {
           for (const [key, value] of Object.entries(selectedFilters)) {
             if (value) { // Only add the filter if a value is selected
@@ -28,12 +30,13 @@ const useGetAllJobs = () => {
         // Add this console log for debugging, you can remove it later
         console.log("Final Fetch URL:", url);
 
-        const res = await axios.get(
-          url,
-          {
-            withCredentials: true,
-          }
-        );
+        // const res = await axios.get(
+        //   url,
+        //   {
+        //     withCredentials: true,
+        //   }
+        // );
+        const res = await API.get(url);
         console.log("API Response:", res.data);
         if (res.data.success) {
           // Updated success check

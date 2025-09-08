@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setSingleJob } from "@/redux/jobSlice";
-import axios from "axios";
+import API from "@/api/axios";
 import { JOB_API_ENDPOINT } from "@/utils/data";
 
 const useGetJobById = (id) => {
@@ -11,9 +11,10 @@ const useGetJobById = (id) => {
     const fetchSingleJob = async () => {
         console.log("HOOK: Attempting to fetch job with ID:", id);
       try {
-        const res = await axios.get(`${JOB_API_ENDPOINT}/get/${id}`, {
-          withCredentials: true,
-        });
+        // const res = await axios.get(`${JOB_API_ENDPOINT}/get/${id}`, {
+        //   withCredentials: true,
+        // });
+        const res = await API.get(`/job/get/${id}`);
         //
         console.log("HOOK: API Response Received:", res.data); 
         if (res.data.status) {

@@ -46,21 +46,7 @@ const Profile = () => {
               {/* Profile Info */}
               <div className="flex items-center gap-6">
                 {/* Avatar with gradient border */}
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full p-1">
-                    <div className="bg-black rounded-full p-1">
-                      <Avatar className="h-28 w-28 border-4 border-black">
-                        <AvatarImage
-                          src={user?.profile?.profilePhoto}
-                          alt={user?.fullname}
-                          className="object-cover"
-                        />
-                      </Avatar>
-                    </div>
-                  </div>
-                  {/* Status indicator */}
-                  <div className="absolute bottom-2 right-2 w-4 h-4 bg-green-500 border-2 border-black rounded-full"></div>
-                </div>
+               
                 
                 <div className="space-y-3">
                   <div>
